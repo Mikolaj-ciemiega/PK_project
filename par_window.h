@@ -18,7 +18,7 @@ class par_window : public QDialog
     Q_OBJECT
 
 public:
-    explicit par_window(function *out_data, QWidget *parent = nullptr);
+    explicit par_window(function &out_data, QWidget *parent = nullptr);
     explicit par_window(QWidget *parent = nullptr);
     ~par_window();
 

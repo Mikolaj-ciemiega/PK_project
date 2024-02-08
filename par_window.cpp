@@ -10,9 +10,9 @@ par_window::par_window(QWidget *parent)
             this,SLOT(on_finished(int)));
 }
 
-par_window::par_window(function *i_out_data, QWidget *parent)
+par_window::par_window(function &i_out_data, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::par_window), out_data(i_out_data)
+    , ui(new Ui::par_window), out_data(&i_out_data)
 {
     ui->setupUi(this);
 }

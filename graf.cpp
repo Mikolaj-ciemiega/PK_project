@@ -20,14 +20,16 @@ graf::~graf()
     delete ui;
 }
 
-void graf::open_par_window(function* in)
+int graf::open_par_window(function &in)
 {
     qInfo()<<"window open pressed";
     window= new par_window(in,nullptr);
-    window->exec();
+    int out=window->exec();
     qInfo()<<"window exec";
     delete window;
     qInfo()<<"window delete";
+
+    return out;
 }
 
 QString graf:: type2string(type_of_fun type)
@@ -60,8 +62,10 @@ void graf::display_par()
         it++;
     }
     parameters par=it->get_parameters();
-    QString wypisz= "type: " + type2string(it->get_type()) + " a = "+ QString::number(par.a) +
-                     " b = "+ QString::number(par.b) + " c = " +QString::number(par.c);
+    QString wypisz= "type: " + type2string(it->get_type())
+                     + " a = "+ QString::number(par.a) +
+                     " b = "+ QString::number(par.b)
+                     + " c = " +QString::number(par.c);
     ui->par_display->setHtml(wypisz);
     qInfo()<<"display end";
 }
@@ -87,35 +91,85 @@ void graf::on_display_right_pressed()
 void graf::on_create_pressed()
 {
     qInfo()<<"crete bg";
-    function *fn= new function;
-    open_par_window(fn);
-    qInfo()<<"window closed";
-    if(fn!=nullptr)
+    function fn;
+
+    if(open_par_window(fn))
     {
-        function_list.push_back(*fn);
+        qInfo()<<"window closed";
+        function_list.push_back(fn);
         qInfo()<<"push back";
         create_view();
         curr++;
         ammount++;
     }
     qInfo()<<"crete end";
-    delete fn;
 }
 
 void graf::on_edit_pressed()
 {
-    function *fn= new function;
-    open_par_window(fn);
-    auto it = function_list.begin();
-    for (int i = 0; i < curr; ++i)
+    function fn;
+    qInfo()<<"edit bg";
+    if(open_par_window(fn))
     {
-        it++;
-    }
-    *it=*fn;
-    create_view();
-    delete fn;
-}
+        qInfo()<<"window closed sucesfully";
 
+        parameters tst= fn.get_parameters();
+        qInfo()<<tst.a;
+        qInfo()<<tst.b;
+        qInfo()<<tst.c;
+
+        qInfo()<<type2string(fn.get_type());
+
+        if(chart!=nullptr)
+        {
+            delete chart;
+        }
+        qInfo()<<"chart delete";
+
+        chart = new QChart();
+        qInfo()<<"new chart";
+
+        chart->addSeries(fn.get_series());
+        chart->createDefaultAxes();
+        qInfo()<<"series added";
+
+        if(view!=nullptr)
+        {
+            delete view;
+        }
+        qInfo()<<"view deleted";
+
+        view =new QChartView(chart);
+        qInfo()<<"chart added";
+        view->setRenderHint(QPainter::Antialiasing);
+
+        ui->dispay->addWidget(view,0,0);
+        qInfo()<<"display widget";
+
+        parameters par=fn.get_parameters();
+        QString wypisz= "type: " + type2string(fn.get_type()) +
+                         " a = "+ QString::number(par.a) +
+                         " b = "+ QString::number(par.b) +
+                         " c = " +QString::number(par.c);
+        ui->par_display->setHtml(wypisz);
+    }
+}
+/*
+void graf::on_edit_pressed()
+{
+    function fn;
+    if(open_par_window(fn))
+    {
+        auto it = function_list.begin();
+        for (int i = 0; i < curr; ++i)
+        {
+            it++;
+        }
+        *it=fn;
+        create_view();
+    }
+}
+*/
 void graf::on_delete_2_pressed()
 {
     auto it = function_list.begin();
@@ -125,11 +179,13 @@ void graf::on_delete_2_pressed()
     }
     function_list.erase(it);
     create_view();
+
 }
 
 void graf::create_view()
 {
     qInfo()<<"view start";
+
     if(chart!=nullptr)
     {
         delete chart;

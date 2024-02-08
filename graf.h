@@ -36,7 +36,7 @@ private:
     void display_par();
     QString type2string(type_of_fun type);
 
-    void open_par_window(function* in);
+    int open_par_window(function &in);
 
     std::list<function> function_list;
     int ammount=0;
