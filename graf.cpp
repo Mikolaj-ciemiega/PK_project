@@ -13,6 +13,7 @@ graf::graf(QWidget *parent)
     show.update_fun(par,ax,type_of_fun::para);
     function_list.push_back(show);
     create_view();
+
 }
 
 graf::~graf()
@@ -72,7 +73,7 @@ void graf::display_par()
 
 void graf::on_display_left_pressed()
 {
-    if(curr>1)
+    if(curr>0)
     {
         curr--;
     }
@@ -85,6 +86,9 @@ void graf::on_display_right_pressed()
     {
         curr++;
     }
+    qInfo()<<curr;
+    qInfo()<<ammount;
+
     display_par();
 }
 
@@ -105,6 +109,8 @@ void graf::on_create_pressed()
     qInfo()<<"crete end";
 }
 
+//debug code//
+/*
 void graf::on_edit_pressed()
 {
     function fn;
@@ -129,7 +135,7 @@ void graf::on_edit_pressed()
         chart = new QChart();
         qInfo()<<"new chart";
 
-        chart->addSeries(fn.get_series());
+        chart->addSeries(fn.create_series());
         chart->createDefaultAxes();
         qInfo()<<"series added";
 
@@ -144,6 +150,7 @@ void graf::on_edit_pressed()
         view->setRenderHint(QPainter::Antialiasing);
 
         ui->dispay->addWidget(view,0,0);
+
         qInfo()<<"display widget";
 
         parameters par=fn.get_parameters();
@@ -154,7 +161,8 @@ void graf::on_edit_pressed()
         ui->par_display->setHtml(wypisz);
     }
 }
-/*
+*/
+
 void graf::on_edit_pressed()
 {
     function fn;
@@ -168,18 +176,6 @@ void graf::on_edit_pressed()
         *it=fn;
         create_view();
     }
-}
-*/
-void graf::on_delete_2_pressed()
-{
-    auto it = function_list.begin();
-    for (int i = 0; i < curr; ++i)
-    {
-        it++;
-    }
-    function_list.erase(it);
-    create_view();
-
 }
 
 void graf::create_view()
@@ -198,11 +194,36 @@ void graf::create_view()
     for (auto it = function_list.begin(); it != function_list.end(); ++it)
     {
         qInfo()<<iter;
-        chart->addSeries(it->get_series());
-        chart->createDefaultAxes();
+        //debug code//
+        /*
+        qInfo()<<it->create_series()->count();
+
+        QList<QPointF> list=it->create_series()->points();
+        for (auto it = list.begin(); it != list.end(); ++it)
+        {
+            qInfo()<<it->x();
+            qInfo()<<it->y();
+        }
+        */
+        chart->addSeries(it->create_series());
+
         qInfo()<<"chart iter end";
         iter++;
     }
+    //debug code//
+    /*
+    QSplineSeries *series = new QSplineSeries();
+    series->append(0, 6);
+    series->append(2, 4);
+    series->append(3, 8);
+    series->append(7, 4);
+    series->append(10, 5);
+    *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
+
+    chart->addSeries(series);
+    */
+    chart->createDefaultAxes();
+
     qInfo()<<"series added";
 
     if(view!=nullptr)

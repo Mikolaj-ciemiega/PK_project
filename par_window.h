@@ -37,6 +37,8 @@ private slots:
 
     void on_buttonBox_rejected();
 
+    void on_par_b_valueChanged(double arg1);
+
 private:
     Ui::par_window *ui;
     void get_para();

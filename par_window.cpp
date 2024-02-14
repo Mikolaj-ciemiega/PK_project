@@ -27,6 +27,7 @@ void par_window::on_push_line_pressed()
     type=type_of_fun::line;
     ui->par_c->setDisabled(1);
     ui->txt_show_type->setHtml("line");
+    on_par_b_valueChanged(1);
 }
 
 void par_window::on_push_para_pressed()
@@ -34,6 +35,7 @@ void par_window::on_push_para_pressed()
     type=type_of_fun::para;
     ui->par_c->setDisabled(0);
     ui->txt_show_type->setHtml("parabola");
+    on_par_b_valueChanged(1);
 }
 
 void par_window::on_push_root_pressed()
@@ -41,6 +43,7 @@ void par_window::on_push_root_pressed()
     type=type_of_fun::sqrt;
     ui->par_c->setDisabled(0);
     ui->txt_show_type->setHtml("root");
+    on_par_b_valueChanged(1);
 }
 
 void par_window::on_push_log_pressed()
@@ -48,6 +51,7 @@ void par_window::on_push_log_pressed()
     type=type_of_fun::log;
     ui->par_c->setDisabled(0);
     ui->txt_show_type->setHtml("log");
+    on_par_b_valueChanged(1);
 }
 
 void par_window::on_push_sin_pressed()
@@ -55,6 +59,7 @@ void par_window::on_push_sin_pressed()
     type=type_of_fun::sin;
     ui->par_c->setDisabled(0);
     ui->txt_show_type->setHtml("sin");
+    on_par_b_valueChanged(1);
 }
 
 void par_window::get_para()
@@ -87,31 +92,34 @@ void par_window::on_buttonBox_accepted()
         ax.max=d;
     }
 
-    if(type==type_of_fun::log)
-    {
-        if(para.a==1.0||para.a<=0.0)
-        {
-            QMessageBox mess;
-            mess.setText("Parameter error");
-            mess.setInformativeText("Plese check if your parameters are correct");
-            mess.setStandardButtons(QMessageBox::Ok);
-            mess.setIcon(QMessageBox::Warning);
-            mess.exec();
-        }
-        else
-        {
-            out_data->update_fun(para,ax,type);
-        }
-    }
-    else
-    {
-        out_data->update_fun(para,ax,type);
-    }
+    out_data->update_fun(para,ax,type);
 }
 
 
 void par_window::on_buttonBox_rejected()
 {
     out_data=nullptr;
+}
+
+
+void par_window::on_par_b_valueChanged(double arg1)
+{
+    Q_UNUSED(arg1);
+    if(type==type_of_fun::log)
+    {
+        if(ui->par_b->value()==1.0||ui->par_b->value()<=0.0)
+        {
+            ui->buttonBox->setDisabled(true);
+
+        }
+        else
+        {
+            ui->buttonBox->setDisabled(false);
+        }
+    }
+    else
+    {
+        ui->buttonBox->setDisabled(false);
+    }
 }
 

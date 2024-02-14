@@ -5,6 +5,12 @@
 #include <QtCharts/QtCharts>
 #include <QtWidgets>
 #include <QGraphicsView>
+#include <QChartView>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtCharts/QChartView>
+#include <QtCharts/QSplineSeries>
+#include <QPainterPath>
 
 enum class type_of_fun
 {
@@ -34,11 +40,8 @@ class function
     type_of_fun type;
     parameters par;
     axis x;
-    QSplineSeries* series=nullptr;
     int size_of_array;
     void cal_size_of_array();
-    void create_series();
-
 
     void fun(array);
     void fun_line(array);
@@ -52,12 +55,11 @@ class function
     void update_type(type_of_fun n_type);
 public:
     function();
-    ~function();
     QChartView show_view();
     parameters get_parameters();
     type_of_fun get_type();
-    QSplineSeries* get_series();
     void update_fun(parameters n_par,axis n_x,type_of_fun n_type);
+    QSplineSeries* create_series();
 };
 
 #endif // FUNCTION_H

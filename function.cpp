@@ -2,32 +2,47 @@
 
 function::function() {}
 
-function::~function()
-{
-    delete series;
-}
 
-void function::create_series()
+QSplineSeries* function::create_series()
 {
-    qInfo()<<"series start";
-    if(series != nullptr)
-    {
-        delete series;
-    }
-    qInfo()<<"series delete";
+    qInfo()<<"create series start";
+
     array data = new point[size_of_array];
+
+    /*
+    QList<QPointF> list;
+    QPointF point;
+
+    double cal_x = x.min;
+
+    for (int i = 0; i < size_of_array; ++i)
+    {
+        point.setX(cal_x);
+        point.setY(par.a * cal_x*cal_x + par.b * cal_x + par.c);
+        list.append(point);
+        cal_x += 0.1;
+    }
+    */
     qInfo()<<"fun start";
     fun(data);
     qInfo()<<"fun end";
-    series = new  QSplineSeries();
+    QSplineSeries* series = new QSplineSeries;
     qInfo()<<"series iter";
+
     for (int i = 0; i < size_of_array; ++i)
     {
         series->append(data[i].x, data[i].y);
     }
+    /*
+    series->clear();
+
+    series->append(list);
+    */
     qInfo()<<"series iter end";
     delete[] data;
     qInfo()<<"series end";
+
+    return series;
 }
 
 void function::update_par(parameters n_par)
@@ -103,6 +118,10 @@ void function::fun_line(array data)
         data[i].x = cal_x;
         data[i].y = par.a * cal_x + par.b;
         cal_x += 0.1;
+
+
+        qInfo()<<data[i].x;
+        qInfo()<<data[i].y;
     }
 }
 
@@ -110,7 +129,7 @@ void function::fun_para(array data)
 {
     qInfo()<<"fun para";
     double cal_x = x.min;
-    for (int i = 0; i < size_of_array; i++)
+    for (int i = 0; i < size_of_array; ++i)
     {
         data[i].x = cal_x;
         data[i].y = par.a * cal_x*cal_x + par.b * cal_x + par.c;
@@ -124,7 +143,7 @@ void function::fun_root(array data)
     double cal_x = x.min;
     for (int i = 0; i < size_of_array; i++)
     {
-        if(i>=0)
+        if(cal_x>=0)
         {
             data[i].x = cal_x;
             data[i].y = par.a*(pow(cal_x,(float)1/par.b))+par.c;
@@ -180,7 +199,3 @@ type_of_fun function::get_type()
     return type;
 }
 
-QSplineSeries* function:: get_series()
-{
-    return series;
-}
