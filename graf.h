@@ -31,6 +31,10 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
 
+#include <QFile>
+#include <QFileDialog>
+#include <QTextStream>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class graf;
@@ -55,6 +59,10 @@ private slots:
 
     void on_edit_pressed();
 
+    void on_save2file_clicked();
+
+    void on_changeFileName_clicked();
+
 private:
     Ui::graf *ui;
     void create_view();
@@ -70,6 +78,10 @@ private:
     QChartView *view = nullptr;
 
     par_window *window;
+
+    bool file_select(QString in_fileName);
+
+    QFile file;
 
 };
 #endif // GRAF_H

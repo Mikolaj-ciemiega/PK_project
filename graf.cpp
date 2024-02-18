@@ -14,6 +14,8 @@ graf::graf(QWidget *parent)
     function_list.push_back(show);
     create_view();
 
+    file_select("");
+
 }
 
 graf::~graf()
@@ -240,5 +242,68 @@ void graf::create_view()
     qInfo()<<"display widget";
     display_par();
     qInfo()<<"view end";
+}
+
+
+void graf::on_save2file_clicked()
+{
+    QString fileName;
+    fileName=QFileDialog::getSaveFileName(this,"Select file","","Text file (*.txt)");
+    bool selected=file_select(fileName);
+    if(selected)
+    {
+        file.close();
+        if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+        {
+            QTextStream out_stream(&file);
+            QString contents;
+
+            auto it = function_list.begin();
+            for (int i = 0; i < curr; ++i)
+            {
+                it++;
+            }
+            QList<QPointF> points = it->create_series()->points();
+
+            parameters par=it->get_parameters();
+            contents.append("type: " + type2string(it->get_type())
+                            + " a = "+ QString::number(par.a) +
+                            " b = "+ QString::number(par.b)
+                            + " c = " +QString::number(par.c) + "\n");
+
+            for (auto iter = points.begin(); iter!=points.end(); iter++)
+            {
+                contents.append("x= " + QString::number(iter->x()) + " y= " + QString::number(iter->y()) + "\n");
+            }
+            out_stream<<contents;
+            file.close();
+            ui->file_disp->setText("Saved successfully");
+        }else  ui->file_disp->setText("Saving error");
+    }
+}
+
+bool graf::file_select(QString in_fileName)
+{
+    static QString fileName ="";
+    if (!in_fileName.isEmpty())
+        fileName=in_fileName;
+    bool noEmpty=!fileName.isEmpty();
+
+    if(noEmpty)
+    {
+        file.setFileName(fileName);
+
+        ui->file_disp->setText("File selected");
+    }
+    else
+    {
+        ui->file_disp->setText("File missing");
+    }
+    return noEmpty;
+}
+
+void graf::on_changeFileName_clicked()
+{
+
 }
 
